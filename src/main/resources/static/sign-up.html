@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzBmMDA4MSIvPgo8Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxMiIgZmlsbD0iI2ZmOGMwMCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiLz4KPHBhdGggZD0iTTEwIDEySDIyVjE4SDEwVjEyWiIgZmlsbD0iI2ZmZmZmZiIvPgo8Y2lyY2xlIGN4PSIxNiIgY3k9IjE0IiByPSIxLjUiIGZpbGw9IiMwZjAwODEiLz4KPHBhdGggZD0iTTE0IDI0QzE0IDI2LjIwOTEgMTUuNzkwOSAyOCAxOCAyOEMyMC4yMDkxIDI4IDIyIDI2LjIwOTEgMjIgMjQiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./sign-up.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="assets/formValidation.css">
+  <title>Finance Tracker - A Personal Finance App</title>
+</head>   
+
+<body>
+  <!-- <header class="header-part"> -->
+    <nav>
+      <div class="navbar">
+        <a href="./index.html" class="logo"><i class="fas fa-chart-line"></i> Finance Tracker</a>
+        <ul class="nav-links">
+          <li><a href="./index.html" class="active">Home</a></li>
+          <li><a href="./index.html#tracker">Use Tracker</a></li>
+          <li><a href="./index.html#how-it-works">How it Works</a></li>
+          <li><a href="./index.html#invite">Community</a></li>
+          <li><a href="./support.html">Support</a></li>
+        </ul>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+          <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-input" placeholder="Search" class="search-input">
+            <div class="search-shortcut">
+              <span class="shortcut-key">⌘</span>
+              <span class="shortcut-key">K</span>
+              <span class="shortcut-separator">/</span>
+              <span class="shortcut-key">Ctrl</span>
+              <span class="shortcut-key">K</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="buttons">
+          <a href="./login.html" class="btn-head"><i class="fas fa-sign-in-alt"></i> Log In</a>
+          <a href="./sign-up.html" class="btn-head"><i class="fas fa-user-plus"></i> Sign Up</a>
+        </div>
+        <div class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="signup-hero">
+      <div class="signup-hero-content">
+        <div class="signup-hero-text">
+          <h1>Join Finance Tracker</h1>
+          <p>Start your journey to financial freedom with our comprehensive personal finance tracking tool.</p>
+          <div class="signup-benefits">
+            <div class="benefit-item">
+              <i class="fas fa-chart-line"></i>
+              <span>Track Your Finances</span>
+            </div>
+            <div class="benefit-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Secure & Private</span>
+            </div>
+            <div class="benefit-item">
+              <i class="fas fa-mobile-alt"></i>
+              <span>Access Anywhere</span>
+            </div>
+          </div>
+        </div>
+        <div class="signup-hero-image">
+          <div class="floating-card">
+            <i class="fas fa-wallet"></i>
+            <h3>Smart Budgeting</h3>
+            <p>Manage your money like a pro</p>
+          </div>
+          <div class="floating-card">
+            <i class="fas fa-piggy-bank"></i>
+            <h3>Save More</h3>
+            <p>Reach your financial goals</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sign Up Form Section -->
+    <div class="signup-container">
+      <div class="signup-form-wrapper">
+        <div class="signup-form-header">
+          <h2>Create Your Account</h2>
+          <p>Fill in your details to get started</p>
+        </div>
+        
+        <form class="modern-signup-form" id="signupForm">
+          <!-- Alert Message Area -->
+          <div id="alertMessage" style="display: none; padding: 1rem; margin-bottom: 1rem; border-radius: 6px;"></div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullname">
+                <i class="fas fa-user"></i>
+                Full Name <span>*</span>
+              </label>
+              <input type="text" id="fullname" name="fullname" required placeholder="Enter your full name" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="email">
+                <i class="fas fa-envelope"></i>
+                Email Address <span>*</span>
+              </label>
+              <input type="email" id="email" name="email" required placeholder="Enter your email" autocomplete="email">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="mobile">
+                <i class="fas fa-phone"></i>
+                Mobile Number <span>*</span>
+              </label>
+              <input type="tel" id="mobile" name="mobile" required placeholder="Enter your mobile number" autocomplete="tel">
+            </div>
+            <div class="form-group">
+              <label for="username">
+                <i class="fas fa-user-circle"></i>
+                Username <span>*</span>
+              </label>
+              <input type="text" id="username" name="username" required placeholder="Choose a username" autocomplete="username">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">
+                <i class="fas fa-lock"></i>
+                Password <span>*</span>
+              </label>
+              <div style="position: relative;">
+                <input type="password" id="password" name="password" required placeholder="Create a strong password" autocomplete="new-password">
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #7f8c8d;">
+                  <i class="fas fa-eye" id="password-toggle-icon"></i>
+                </button>
+              </div>
+              <!-- Password strength indicator will be inserted here by JS -->
+            </div>
+            <div class="form-group">
+              <label for="confirm-password">
+                <i class="fas fa-lock"></i>
+                Confirm Password <span>*</span>
+              </label>
+              <div style="position: relative;">
+                <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password" autocomplete="new-password">
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility('confirm-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #7f8c8d;">
+                  <i class="fas fa-eye" id="confirm-password-toggle-icon"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="terms" name="terms" required>
+              <span class="checkmark"></span>
+              I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </label>
+          </div>
+          
+          <button type="submit" class="signup-btn">
+            <i class="fas fa-user-plus"></i>
+            Create Account
+          </button>
+          
+          <div class="signup-divider">
+            <span>or</span>
+          </div>
+          
+          <div class="social-signup">
+            <button type="button" class="social-btn google-btn">
+              <i class="fab fa-google"></i>
+              Sign up with Google
+            </button>
+            <button type="button" class="social-btn facebook-btn">
+              <i class="fab fa-facebook-f"></i>
+              Sign up with Facebook
+            </button>
+          </div>
+          
+          <div class="signup-footer">
+            <p>Already have an account? <a href="./login.html">Sign in here</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <i class="fas fa-chart-line"></i>
+            <h3>Finance Tracker</h3>
+          </div>
+          <p class="footer-description">
+            Take control of your finances with our comprehensive personal finance tracking tool. 
+            Manage your income, expenses, and financial goals effortlessly.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="./index.html#tracker">Use Tracker</a></li>
+            <li><a href="./index.html#how-it-works">How it Works</a></li>
+            <li><a href="./index.html#invite">Community</a></li>
+            <li><a href="./support.html">Support</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Resources</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Help Center</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact Info</h4>
+          <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> rr2258@srmist.edu.in</p>
+            <p><i class="fas fa-phone"></i> +91 96264 49078</p>
+            <p><i class="fas fa-map-marker-alt"></i> SRM KTR TP2</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
+          <p class="developer-credit">Created by <strong>Raghul</strong> - Senior Java Developer</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>feather.replace();</script>
+  <script src="script.js"></script>
+  <script src="assets/apiService.js"></script>
+  <script src="assets/auth.js"></script>
+  <script src="assets/formValidation.js"></script>
+  <script>
+    // Toggle password visibility
+    function togglePasswordVisibility(fieldId) {
+      const field = document.getElementById(fieldId);
+      const icon = document.getElementById(fieldId + '-toggle-icon');
+      
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+    
+    // Initialize form handling
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing signup form...');
+      
+      // Check if already logged in
+      if (typeof AuthManager !== 'undefined' && AuthManager.isAuthenticated()) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      const signupForm = document.getElementById('signupForm');
+      const alertMessage = document.getElementById('alertMessage');
+      
+      // Direct form submit handler (fallback if FormValidator doesn't work)
+      signupForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        console.log('Form submitted!');
+        
+        // Basic validation
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const terms = document.getElementById('terms').checked;
+        
+        if (password !== confirmPassword) {
+          showAlert('Passwords do not match!', 'error');
+          return;
+        }
+        
+        if (!terms) {
+          showAlert('Please accept the terms and conditions', 'error');
+          return;
+        }
+        
+        // Get form data (matching backend SignupRequest DTO)
+        const formData = {
+          username: document.getElementById('username').value,
+          email: document.getElementById('email').value,
+          password: password,
+          confirmPassword: confirmPassword,
+          fullname: document.getElementById('fullname').value,
+          mobile: document.getElementById('mobile').value
+        };
+        
+        console.log('Sending registration data:', formData);
+        
+        // Disable submit button
+        const submitBtn = signupForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        
+        try {
+          // Make API call
+          console.log('Making API call to:', 'http://localhost:8080/api/auth/register');
+          console.log('Request body:', JSON.stringify(formData, null, 2));
+          
+          const response = await fetch('http://localhost:8080/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          console.log('Response status:', response.status);
+          console.log('Response headers:', response.headers);
+          
+          // Try to get response text first
+          const responseText = await response.text();
+          console.log('Response text:', responseText);
+          
+          if (response.ok) {
+            const data = responseText ? JSON.parse(responseText) : {};
+            console.log('Registration successful:', data);
+            
+            showAlert('Account created successfully! Redirecting to login...', 'success');
+            
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 2000);
+          } else {
+            const errorData = responseText ? JSON.parse(responseText) : {};
+            console.error('Registration failed:', errorData);
+            
+            let errorMsg = errorData.message || 'Registration failed. Please try again.';
+            
+            // Check for field validation errors
+            if (errorData.fieldErrors && errorData.fieldErrors.length > 0) {
+              errorMsg = '<strong>Validation Errors:</strong><ul style="margin: 0.5rem 0; padding-left: 1.5rem;">';
+              errorData.fieldErrors.forEach(err => {
+                errorMsg += `<li><strong>${err.field}:</strong> ${err.message}</li>`;
+              });
+              errorMsg += '</ul>';
+            }
+            
+            showAlert(errorMsg, 'error');
+            
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+          }
+        } catch (error) {
+          console.error('Registration error:', error);
+          
+          // Try to get more error details
+          let errorMsg = 'Network error. Please check your connection and try again.';
+          if (error.message) {
+            errorMsg = 'Error: ' + error.message;
+          }
+          
+          showAlert(errorMsg, 'error');
+          
+          // Re-enable submit button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+        }
+      });
+      
+      function showAlert(message, type) {
+        alertMessage.style.display = 'block';
+        
+        if (type === 'success') {
+          alertMessage.style.backgroundColor = '#f0fff4';
+          alertMessage.style.color = '#27ae60';
+          alertMessage.style.borderLeft = '4px solid #27ae60';
+          alertMessage.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+        } else {
+          alertMessage.style.backgroundColor = '#fff5f5';
+          alertMessage.style.color = '#e74c3c';
+          alertMessage.style.borderLeft = '4px solid #e74c3c';
+          alertMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + message;
+        }
+        
+        // Scroll to alert
+        alertMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      
+      // Password match validation
+      const confirmPasswordField = document.getElementById('confirm-password');
+      confirmPasswordField.addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        if (this.value && this.value !== password) {
+          this.setCustomValidity('Passwords do not match');
+        } else {
+          this.setCustomValidity('');
+        }
+      });
+    });
+  </script>
+  <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

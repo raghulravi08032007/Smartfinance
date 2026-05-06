@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload - Finance Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/file-upload.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-wrapper">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Finance Tracker</span>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <div class="nav-links">
+                <a href="./index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="./dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="./file-upload.html" class="active"><i class="fas fa-cloud-upload-alt"></i> Files</a>
+                <a href="./support.html"><i class="fas fa-life-ring"></i> Support</a>
+                <a href="./admin-panel.html" id="admin-nav-link" style="display: none;"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                <div id="user-greeting" style="display: none;"></div>
+                <a href="#" id="logout-btn" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                <a href="./login.html" id="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="./sign-up.html" id="signup-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="file-upload-container">
+        <h1><i class="fas fa-cloud-upload-alt"></i> File Manager</h1>
+        
+        <!-- Storage Stats -->
+        <div id="storage-stats" class="storage-stats">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Upload Area -->
+        <div id="file-upload-area" class="file-upload-area">
+            <div class="file-upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="file-upload-text">
+                <h3>Drag & Drop Files Here</h3>
+                <p>or</p>
+                <button class="file-upload-button">
+                    <i class="fas fa-folder-open"></i> Browse Files
+                </button>
+                <input type="file" id="file-input" class="file-upload-input" multiple>
+                <p class="file-requirements">
+                    Supported: Images (JPEG, PNG, GIF), PDF, Word, Excel, Text<br>
+                    Maximum size: 10 MB per file
+                </p>
+            </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div id="upload-progress" class="upload-progress">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text">Uploading...</div>
+        </div>
+
+        <!-- File Preview List -->
+        <div class="file-preview-list">
+            <h3><i class="fas fa-folder"></i> My Files</h3>
+            <div id="file-preview-list">
+                <!-- Files will be loaded here -->
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>Loading files...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="image-modal">
+        <span class="image-modal-close">&times;</span>
+        <img src="" alt="Preview">
+    </div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer" style="margin-top: 50px;">
+        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
+        <p>Need help? <a href="./support.html">Contact Support</a></p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/apiService.js"></script>
+    <script src="assets/auth.js"></script>
+    <script src="assets/file-upload.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        // Initialize file upload when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!UserManager.isAuthenticated()) {
+                window.location.href = './login.html';
+                return;
+            }
+
+            // Show admin link if user is admin
+            if (typeof UserManager !== 'undefined' && UserManager.isAuthenticated()) {
+                const user = UserManager.getCurrentUser();
+                if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
+                    const adminNavLink = document.getElementById('admin-nav-link');
+                    if (adminNavLink) {
+                        adminNavLink.style.display = 'inline-flex';
+                    }
+                }
+            }
+
+            // Initialize file upload manager
+            const fileUploadManager = new FileUploadManager({
+                apiBaseUrl: '/api/files',
+                maxFileSize: 10 * 1024 * 1024, // 10MB
+                allowedTypes: [
+                    'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'text/plain', 'text/csv'
+                ]
+            });
+
+            // Make it globally accessible
+            window.fileUploadManager = fileUploadManager;
+
+            console.log('File upload manager initialized');
+        });
+    </script>
+</body>
+</html>

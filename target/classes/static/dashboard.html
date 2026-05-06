@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Finance Tracker</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="navigation-styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="assets/auth-ui.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-wrapper">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Finance Tracker</span>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <div class="nav-links">
+                <a href="./index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="./dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="./support.html"><i class="fas fa-life-ring"></i> Support</a>
+                <a href="./admin-panel.html" id="admin-nav-link" style="display: none;"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                <div id="user-greeting" style="display: none;"></div>
+                <a href="#" id="logout-btn" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                <a href="./login.html" id="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="./sign-up.html" id="signup-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Page Header -->
+        <header class="dashboard-header">
+            <div id="dynamic-greeting-dashboard" class="greeting-section">
+                <!-- Dynamic greeting will be inserted here -->
+            </div>
+        </header>
+
+        <!-- Stats Cards Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-tickets">0</h3>
+                        <p>Total Tickets</p>
+                    </div>
+                </div>
+
+                <div class="stat-card stat-open">
+                    <div class="stat-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="open-tickets">0</h3>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+
+                <div class="stat-card stat-resolved">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="resolved-tickets">0</h3>
+                        <p>Resolved Tickets</p>
+                    </div>
+                </div>
+
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="pending-tickets">0</h3>
+                        <p>Pending Response</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions Section -->
+        <section class="quick-actions-section">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <div class="quick-actions-grid">
+                <button class="action-btn action-primary" onclick="createNewTicket()">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>New Ticket</span>
+                </button>
+                <button class="action-btn action-secondary" onclick="viewProfile()">
+                    <i class="fas fa-user"></i>
+                    <span>View Profile</span>
+                </button>
+                <button class="action-btn action-info" onclick="changePassword()">
+                    <i class="fas fa-key"></i>
+                    <span>Change Password</span>
+                </button>
+                <button class="action-btn action-success" onclick="viewAllTickets()">
+                    <i class="fas fa-list"></i>
+                    <span>View All Tickets</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column -->
+            <div class="dashboard-left">
+                <!-- Recent Activity Timeline -->
+                <section class="activity-section">
+                    <h2><i class="fas fa-history"></i> Recent Activity</h2>
+                    <div id="activity-timeline" class="activity-timeline">
+                        <!-- Activity items will be dynamically inserted here -->
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading activity...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Support Ticket Summary -->
+                <section class="tickets-summary-section">
+                    <h2><i class="fas fa-ticket-alt"></i> Recent Tickets</h2>
+                    <div id="tickets-summary-cards" class="tickets-cards-grid">
+                        <!-- Ticket summary cards will be dynamically inserted here -->
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading tickets...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column -->
+            <div class="dashboard-right">
+                <!-- Ticket Status Chart -->
+                <section class="chart-section">
+                    <h2><i class="fas fa-chart-pie"></i> Ticket Status Distribution</h2>
+                    <div class="chart-container">
+                        <canvas id="ticketStatusChart"></canvas>
+                    </div>
+                    <div id="chart-legend" class="chart-legend"></div>
+                </section>
+
+                <!-- Ticket Priority Chart -->
+                <section class="chart-section">
+                    <h2><i class="fas fa-chart-bar"></i> Priority Breakdown</h2>
+                    <div class="chart-container">
+                        <canvas id="ticketPriorityChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- User Profile Card -->
+                <section class="profile-card-section">
+                    <h2><i class="fas fa-user-circle"></i> Profile Summary</h2>
+                    <div id="profile-summary-card" class="profile-summary-card">
+                        <!-- Profile summary will be dynamically inserted here -->
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading profile...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
+        <p>Need help? <a href="./support.html">Contact Support</a></p>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="assets/apiService.js"></script>
+    <script src="assets/auth.js"></script>
+    <script src="script.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+      // Show admin navigation link if user has admin role
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof UserManager !== 'undefined' && UserManager.isAuthenticated()) {
+          const user = UserManager.getCurrentUser();
+          if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
+            const adminNavLink = document.getElementById('admin-nav-link');
+            if (adminNavLink) {
+              adminNavLink.style.display = 'inline-flex';
+            }
+          }
+        }
+      });
+    </script>
+</body>
+</html>

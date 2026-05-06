@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Ticket Status Update</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .email-header {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .email-body {
+            padding: 40px 30px;
+        }
+        .email-body h2 {
+            color: #27ae60;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .ticket-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .status-update-box {
+            background-color: #d4edda;
+            border-left: 4px solid #27ae60;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .status-update-box h3 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin: 10px 0;
+        }
+        .status-resolved {
+            background-color: #27ae60;
+            color: white;
+        }
+        .status-in-progress {
+            background-color: #3498db;
+            color: white;
+        }
+        .status-pending {
+            background-color: #f39c12;
+            color: white;
+        }
+        .status-closed {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .ticket-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .detail-row {
+            margin: 10px 0;
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: 600;
+            color: #27ae60;
+            min-width: 120px;
+        }
+        .value {
+            color: #555;
+        }
+        .notes-box {
+            background-color: #fff;
+            border: 2px solid #27ae60;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .notes-box h4 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+        .notes-content {
+            color: #555;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        .email-footer a {
+            color: #27ae60;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+            .email-body {
+                padding: 20px 15px;
+            }
+            .detail-row {
+                flex-direction: column;
+            }
+            .label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>🔄 Ticket Status Updated</h1>
+        </div>
+        
+        <div class="email-body">
+            <h2>Hi <span th:text="${name}">Customer</span>! 👋</h2>
+            
+            <p>Good news! The status of your support ticket has been updated. Here are the details:</p>
+            
+            <div class="ticket-number">
+                📋 Ticket #<span th:text="${ticketNumber}">12345</span>
+            </div>
+            
+            <div class="status-update-box">
+                <h3>✨ New Status</h3>
+                <span th:class="'status-badge status-' + ${#strings.toLowerCase(status)}" th:text="${status}">RESOLVED</span>
+            </div>
+            
+            <div class="ticket-details">
+                <div class="detail-row">
+                    <span class="label">Subject:</span>
+                    <span class="value" th:text="${subject}">Issue Subject</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Updated:</span>
+                    <span class="value" th:text="${updatedDate}">Date Time</span>
+                </div>
+            </div>
+            
+            <div class="notes-box" th:if="${notes != null and notes != 'No additional notes'}">
+                <h4>📝 Update Notes:</h4>
+                <div class="notes-content" th:text="${notes}">
+                    Notes about the status update...
+                </div>
+            </div>
+            
+            <div th:if="${#strings.equals(status, 'RESOLVED')}" style="background-color: #d4edda; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>🎉 Your ticket has been resolved!</strong></p>
+                <p style="margin: 10px 0 0 0;">If you're satisfied with the resolution, no further action is needed. 
+                   If you need additional assistance, please reply to this email or create a new ticket.</p>
+            </div>
+            
+            <div th:if="${#strings.equals(status, 'PENDING_USER')}" style="background-color: #fff3cd; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>⏳ Waiting for your response</strong></p>
+                <p style="margin: 10px 0 0 0;">We need some additional information from you to proceed. 
+                   Please check the notes above and provide the requested details.</p>
+            </div>
+            
+            <div th:if="${#strings.equals(status, 'IN_PROGRESS')}" style="background-color: #d1ecf1; padding: 15px; border-radius: 4px; margin: 20px 0;">
+                <p style="margin: 0;"><strong>🔧 We're working on it!</strong></p>
+                <p style="margin: 10px 0 0 0;">Our support team is actively working on resolving your issue. 
+                   We'll keep you updated on the progress.</p>
+            </div>
+            
+            <center>
+                <a href="http://localhost:8080/dashboard.html" class="cta-button">View Ticket Details →</a>
+            </center>
+            
+            <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <strong>Have questions about this update?</strong><br/>
+                Reply to this email or contact our support team at 
+                <a href="mailto:[[${supportEmail}]]" th:href="'mailto:' + ${supportEmail}" style="color: #27ae60;">[[${supportEmail}]]</a>
+            </p>
+            
+            <p style="background-color: #e7f3ff; padding: 15px; border-radius: 4px; margin-top: 20px;">
+                <strong>💡 Pro Tip:</strong> You can view your complete ticket history and all updates in your dashboard. 
+                Click the button above to access your account.
+            </p>
+        </div>
+        
+        <div class="email-footer">
+            <p>Thank you for your patience!</p>
+            <p>
+                <a href="http://localhost:8080">Finance Tracker</a> | 
+                <a href="http://localhost:8080/dashboard.html">My Dashboard</a> |
+                <a th:href="'mailto:' + ${supportEmail}">Contact Support</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                This is an automated notification about your support ticket. 
+                You're receiving this because you submitted a support request.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

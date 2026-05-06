@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Ticket Confirmation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .email-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .email-body {
+            padding: 40px 30px;
+        }
+        .email-body h2 {
+            color: #3498db;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .ticket-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .ticket-details {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .ticket-details .detail-row {
+            margin: 10px 0;
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        .ticket-details .detail-row:last-child {
+            border-bottom: none;
+        }
+        .ticket-details .label {
+            font-weight: 600;
+            color: #3498db;
+            min-width: 120px;
+        }
+        .ticket-details .value {
+            color: #555;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-open {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .priority-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .priority-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .priority-low {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .message-box {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .message-box h4 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .message-content {
+            color: #555;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .info-box {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        .email-footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+            .email-body {
+                padding: 20px 15px;
+            }
+            .ticket-details .detail-row {
+                flex-direction: column;
+            }
+            .ticket-details .label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>✅ Support Ticket Received</h1>
+        </div>
+        
+        <div class="email-body">
+            <h2>Hi <span th:text="${name}">Customer</span>! 👋</h2>
+            
+            <p>Thank you for contacting Finance Tracker Support. We've received your support ticket and our team will review it as soon as possible.</p>
+            
+            <div class="ticket-number">
+                📋 Ticket #<span th:text="${ticketNumber}">12345</span>
+            </div>
+            
+            <div class="ticket-details">
+                <div class="detail-row">
+                    <span class="label">Subject:</span>
+                    <span class="value" th:text="${subject}">Issue Subject</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Status:</span>
+                    <span class="value">
+                        <span class="status-badge status-open" th:text="${status}">OPEN</span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Priority:</span>
+                    <span class="value">
+                        <span th:class="'status-badge priority-' + ${#strings.toLowerCase(priority)}" th:text="${priority}">MEDIUM</span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Created:</span>
+                    <span class="value" th:text="${createdDate}">Date Time</span>
+                </div>
+            </div>
+            
+            <div class="message-box">
+                <h4>Your Message:</h4>
+                <div class="message-content" th:text="${message}">
+                    Your support ticket message content...
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>📬 What happens next?</strong></p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Our support team will review your ticket</li>
+                    <li>You'll receive updates via email</li>
+                    <li>Track your ticket status in the dashboard</li>
+                    <li>Average response time: 24-48 hours</li>
+                </ul>
+            </div>
+            
+            <center>
+                <a href="http://localhost:8080/dashboard.html" class="cta-button">View in Dashboard →</a>
+            </center>
+            
+            <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <strong>Need to add more information?</strong><br/>
+                Reply to this email or contact us at 
+                <a href="mailto:[[${supportEmail}]]" th:href="'mailto:' + ${supportEmail}" style="color: #3498db;">[[${supportEmail}]]</a>
+            </p>
+            
+            <p style="background-color: #fff3cd; padding: 15px; border-radius: 4px; margin-top: 20px;">
+                <strong>💡 Tip:</strong> When replying, please include your ticket number (#<span th:text="${ticketNumber}">12345</span>) 
+                in the subject line for faster processing.
+            </p>
+        </div>
+        
+        <div class="email-footer">
+            <p>Thank you for using Finance Tracker Support!</p>
+            <p>
+                <a href="http://localhost:8080">Finance Tracker</a> | 
+                <a href="http://localhost:8080/dashboard.html">My Dashboard</a> |
+                <a th:href="'mailto:' + ${supportEmail}">Contact Support</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                This is an automated confirmation email. Please do not reply to this email directly. 
+                Use the support email address provided above.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Recovery Tool - Finance Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .storage-info {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .storage-info h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .storage-info pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .transaction-item strong {
+            color: #667eea;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Transaction Recovery Tool</h1>
+        <p class="subtitle">Debug and recover your transactions from localStorage</p>
+
+        <div class="warning">
+            <strong>⚠️ Warning:</strong> This is a diagnostic tool. Use with caution. Always backup your data before making changes.
+        </div>
+
+        <div class="section">
+            <h2>📊 Current Authentication Status</h2>
+            <div class="storage-info">
+                <div id="auth-status"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💾 All Transaction Storage Keys</h2>
+            <div id="all-keys"></div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="scanStorage()">🔄 Refresh Scan</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 View Transactions by User</h2>
+            <select id="user-select">
+                <option value="">Select a user...</option>
+            </select>
+            <button class="btn-info" onclick="viewUserTransactions()">👁️ View Transactions</button>
+            <div id="transaction-viewer"></div>
+        </div>
+
+        <div class="section">
+            <h2>🔄 Merge/Transfer Transactions</h2>
+            <p style="margin-bottom: 15px;">Transfer transactions from one user to another:</p>
+            <div style="margin-bottom: 15px;">
+                <label>From User: </label>
+                <select id="from-user-select">
+                    <option value="">Select source user...</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>To User: </label>
+                <select id="to-user-select">
+                    <option value="">Select destination user...</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <button class="btn-success" onclick="mergeTransactions()">🔀 Merge Transactions</button>
+                <button class="btn-warning" onclick="moveTransactions()">➡️ Move Transactions</button>
+            </div>
+            <div id="merge-result"></div>
+        </div>
+
+        <div class="section">
+            <h2>🧹 Cleanup Operations</h2>
+            <div class="button-group">
+                <button class="btn-warning" onclick="fixCurrentUser()">🔧 Fix Current User's Transactions</button>
+                <button class="btn-danger" onclick="clearEmptyKeys()">🗑️ Clear Empty Transaction Keys</button>
+                <button class="btn-danger" onclick="clearAllTransactions()">⚠️ Clear ALL Transactions (Dangerous!)</button>
+            </div>
+            <div id="cleanup-result"></div>
+        </div>
+
+        <a href="index.html" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        // Scan localStorage for transaction keys
+        function scanStorage() {
+            console.log('Scanning localStorage for transaction data...');
+            
+            // Update auth status
+            const authDiv = document.getElementById('auth-status');
+            const token = localStorage.getItem('jwtToken');
+            const username = localStorage.getItem('username');
+            const userData = localStorage.getItem('user');
+            
+            authDiv.innerHTML = `
+                <p><strong>JWT Token:</strong> ${token ? '✅ Present' : '❌ Missing'}</p>
+                <p><strong>Username:</strong> ${username || '❌ Not set'}</p>
+                <p><strong>User Data:</strong> ${userData ? '✅ Present' : '❌ Missing'}</p>
+                ${userData ? `<pre>${JSON.stringify(JSON.parse(userData), null, 2)}</pre>` : ''}
+            `;
+            
+            // Find all transaction keys
+            const transactionKeys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('financeTracker.transactions')) {
+                    transactionKeys.push(key);
+                }
+            }
+            
+            // Display all keys
+            const keysDiv = document.getElementById('all-keys');
+            if (transactionKeys.length === 0) {
+                keysDiv.innerHTML = '<p style="color: #999;">No transaction keys found in localStorage</p>';
+            } else {
+                let html = '';
+                transactionKeys.forEach(key => {
+                    const data = localStorage.getItem(key);
+                    let count = 0;
+                    try {
+                        const transactions = JSON.parse(data);
+                        count = transactions.length;
+                    } catch (e) {
+                        count = 'Error';
+                    }
+                    
+                    html += `
+                        <div class="storage-info">
+                            <h3>${key}</h3>
+                            <p><strong>Transaction Count:</strong> ${count}</p>
+                            <button class="btn-danger" onclick="deleteKey('${key}')">Delete</button>
+                        </div>
+                    `;
+                });
+                keysDiv.innerHTML = html;
+            }
+            
+            // Populate user selects
+            populateUserSelects(transactionKeys);
+        }
+        
+        // Populate user selection dropdowns
+        function populateUserSelects(keys) {
+            const userSelect = document.getElementById('user-select');
+            const fromUserSelect = document.getElementById('from-user-select');
+            const toUserSelect = document.getElementById('to-user-select');
+            
+            userSelect.innerHTML = '<option value="">Select a user...</option>';
+            fromUserSelect.innerHTML = '<option value="">Select source user...</option>';
+            toUserSelect.innerHTML = '<option value="">Select destination user...</option>';
+            
+            keys.forEach(key => {
+                const username = key.replace('financeTracker.transactions.', '');
+                userSelect.innerHTML += `<option value="${username}">${username}</option>`;
+                fromUserSelect.innerHTML += `<option value="${username}">${username}</option>`;
+                toUserSelect.innerHTML += `<option value="${username}">${username}</option>`;
+            });
+            
+            // Add current username to 'to' select
+            const currentUser = localStorage.getItem('username');
+            if (currentUser) {
+                toUserSelect.innerHTML += `<option value="${currentUser}">${currentUser} (Current)</option>`;
+            }
+        }
+        
+        // View transactions for a specific user
+        function viewUserTransactions() {
+            const username = document.getElementById('user-select').value;
+            if (!username) {
+                alert('Please select a user');
+                return;
+            }
+            
+            const key = `financeTracker.transactions.${username}`;
+            const data = localStorage.getItem(key);
+            const viewer = document.getElementById('transaction-viewer');
+            
+            if (!data) {
+                viewer.innerHTML = '<p style="color: #999; margin-top: 15px;">No transactions found</p>';
+                return;
+            }
+            
+            try {
+                const transactions = JSON.parse(data);
+                if (transactions.length === 0) {
+                    viewer.innerHTML = '<p style="color: #999; margin-top: 15px;">No transactions found</p>';
+                    return;
+                }
+                
+                let html = `<div class="transaction-list" style="margin-top: 15px;">`;
+                transactions.forEach((t, index) => {
+                    const date = new Date(t.primeId).toLocaleDateString();
+                    html += `
+                        <div class="transaction-item">
+                            <strong>#${index + 1}</strong> - ${date}<br>
+                            <strong>Description:</strong> ${t.description}<br>
+                            <strong>Amount:</strong> $${t.amount.toFixed(2)}<br>
+                            <strong>Type:</strong> ${t.type}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                viewer.innerHTML = html;
+            } catch (e) {
+                viewer.innerHTML = `<p class="error-message">Error parsing transactions: ${e.message}</p>`;
+            }
+        }
+        
+        // Merge transactions from one user to another
+        function mergeTransactions() {
+            const fromUser = document.getElementById('from-user-select').value;
+            const toUser = document.getElementById('to-user-select').value;
+            const resultDiv = document.getElementById('merge-result');
+            
+            if (!fromUser || !toUser) {
+                resultDiv.innerHTML = '<p class="error-message">Please select both source and destination users</p>';
+                return;
+            }
+            
+            if (fromUser === toUser) {
+                resultDiv.innerHTML = '<p class="error-message">Source and destination must be different</p>';
+                return;
+            }
+            
+            const fromKey = `financeTracker.transactions.${fromUser}`;
+            const toKey = `financeTracker.transactions.${toUser}`;
+            
+            try {
+                const fromData = localStorage.getItem(fromKey);
+                const toData = localStorage.getItem(toKey);
+                
+                const fromTransactions = fromData ? JSON.parse(fromData) : [];
+                const toTransactions = toData ? JSON.parse(toData) : [];
+                
+                const mergedTransactions = [...toTransactions, ...fromTransactions];
+                localStorage.setItem(toKey, JSON.stringify(mergedTransactions));
+                
+                resultDiv.innerHTML = `<p class="success-message">✅ Successfully merged ${fromTransactions.length} transactions from ${fromUser} to ${toUser}. Total: ${mergedTransactions.length} transactions</p>`;
+                scanStorage();
+            } catch (e) {
+                resultDiv.innerHTML = `<p class="error-message">Error merging transactions: ${e.message}</p>`;
+            }
+        }
+        
+        // Move transactions (merge + delete source)
+        function moveTransactions() {
+            const fromUser = document.getElementById('from-user-select').value;
+            const fromKey = `financeTracker.transactions.${fromUser}`;
+            
+            if (!confirm(`Are you sure you want to MOVE transactions from ${fromUser}? This will delete the source after merging.`)) {
+                return;
+            }
+            
+            mergeTransactions();
+            localStorage.removeItem(fromKey);
+            document.getElementById('merge-result').innerHTML += '<p class="success-message">✅ Source transactions deleted</p>';
+            scanStorage();
+        }
+        
+        // Fix current user's transactions
+        function fixCurrentUser() {
+            const currentUser = localStorage.getItem('username');
+            const resultDiv = document.getElementById('cleanup-result');
+            
+            if (!currentUser) {
+                resultDiv.innerHTML = '<p class="error-message">❌ No current user found. Please log in first.</p>';
+                return;
+            }
+            
+            // Check if there are transactions under 'User' key
+            const userKey = 'financeTracker.transactions.User';
+            const currentKey = `financeTracker.transactions.${currentUser}`;
+            
+            const userData = localStorage.getItem(userKey);
+            if (!userData) {
+                resultDiv.innerHTML = '<p class="success-message">✅ No orphaned transactions found under "User" key</p>';
+                return;
+            }
+            
+            try {
+                const userTransactions = JSON.parse(userData);
+                const currentTransactions = localStorage.getItem(currentKey);
+                const current = currentTransactions ? JSON.parse(currentTransactions) : [];
+                
+                const merged = [...current, ...userTransactions];
+                localStorage.setItem(currentKey, JSON.stringify(merged));
+                localStorage.removeItem(userKey);
+                
+                resultDiv.innerHTML = `<p class="success-message">✅ Fixed! Moved ${userTransactions.length} transactions from "User" to "${currentUser}"</p>`;
+                scanStorage();
+            } catch (e) {
+                resultDiv.innerHTML = `<p class="error-message">Error: ${e.message}</p>`;
+            }
+        }
+        
+        // Clear empty transaction keys
+        function clearEmptyKeys() {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('financeTracker.transactions')) {
+                    const data = localStorage.getItem(key);
+                    try {
+                        const transactions = JSON.parse(data);
+                        if (transactions.length === 0) {
+                            keys.push(key);
+                        }
+                    } catch (e) {
+                        keys.push(key);
+                    }
+                }
+            }
+            
+            if (keys.length === 0) {
+                document.getElementById('cleanup-result').innerHTML = '<p class="success-message">✅ No empty keys found</p>';
+                return;
+            }
+            
+            keys.forEach(key => localStorage.removeItem(key));
+            document.getElementById('cleanup-result').innerHTML = `<p class="success-message">✅ Removed ${keys.length} empty transaction keys</p>`;
+            scanStorage();
+        }
+        
+        // Clear ALL transactions
+        function clearAllTransactions() {
+            if (!confirm('⚠️ WARNING: This will delete ALL transaction data for ALL users. Are you absolutely sure?')) {
+                return;
+            }
+            
+            if (!confirm('⚠️ FINAL WARNING: This action CANNOT be undone. Continue?')) {
+                return;
+            }
+            
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('financeTracker.transactions')) {
+                    keys.push(key);
+                }
+            }
+            
+            keys.forEach(key => localStorage.removeItem(key));
+            document.getElementById('cleanup-result').innerHTML = `<p class="success-message">✅ Cleared ${keys.length} transaction storage keys</p>`;
+            scanStorage();
+        }
+        
+        // Delete a specific key
+        function deleteKey(key) {
+            if (!confirm(`Delete ${key}?`)) {
+                return;
+            }
+            localStorage.removeItem(key);
+            scanStorage();
+        }
+        
+        // Run scan on page load
+        window.addEventListener('DOMContentLoaded', scanStorage);
+    </script>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Tickets - Finance Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/pagination.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tickets-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tickets-header {
+            margin-bottom: 30px;
+        }
+
+        .tickets-header h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .tickets-header p {
+            color: #666;
+        }
+
+        .ticket-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .ticket-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ticket-number {
+            font-size: 14px;
+            color: #6c5ce7;
+            font-weight: 600;
+        }
+
+        .ticket-subject {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 5px 0;
+        }
+
+        .ticket-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-status {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-status.open {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .badge-status.in-progress {
+            background: #e1f5fe;
+            color: #0288d1;
+        }
+
+        .badge-status.resolved {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .badge-status.closed {
+            background: #f5f5f5;
+            color: #757575;
+        }
+
+        .badge-priority {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge-priority.low {
+            background: #f1f8e9;
+            color: #689f38;
+        }
+
+        .badge-priority.medium {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+
+        .badge-priority.high {
+            background: #ffecb3;
+            color: #f57c00;
+        }
+
+        .badge-priority.critical {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .ticket-description {
+            color: #666;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .ticket-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ticket-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #999;
+            flex-wrap: wrap;
+        }
+
+        .ticket-meta i {
+            margin-right: 5px;
+        }
+
+        .ticket-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .ticket-actions button {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #6c5ce7;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #5b4cdb;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-wrapper">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Finance Tracker</span>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <div class="nav-links">
+                <a href="./index.html"><i class="fas fa-home"></i> Home</a>
+                <a href="./dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="./tickets.html" class="active"><i class="fas fa-ticket-alt"></i> Tickets</a>
+                <a href="./support.html"><i class="fas fa-life-ring"></i> Support</a>
+                <a href="./admin-panel.html" id="admin-nav-link" style="display: none;"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                <div id="user-greeting" style="display: none;"></div>
+                <a href="#" id="logout-btn" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                <a href="./login.html" id="login-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="./sign-up.html" id="signup-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="tickets-container">
+        <div class="tickets-header">
+            <h1><i class="fas fa-ticket-alt"></i> Support Tickets</h1>
+            <p>Search, filter, and manage your support tickets</p>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search tickets by subject or description...">
+                <button id="clear-search" class="clear-search" style="display: none;">
+                    <i class="fas fa-times"></i>
+                </button>
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="filter-dropdown">
+                <label for="status-filter">Status</label>
+                <select id="status-filter">
+                    <option value="">All Statuses</option>
+                </select>
+            </div>
+
+            <!-- Priority Filter -->
+            <div class="filter-dropdown">
+                <label for="priority-filter">Priority</label>
+                <select id="priority-filter">
+                    <option value="">All Priorities</option>
+                </select>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="sort-dropdown">
+                <label for="sort-field">Sort by:</label>
+                <select id="sort-field">
+                    <option value="createdDate">Created Date</option>
+                    <option value="updatedDate">Updated Date</option>
+                    <option value="subject">Subject</option>
+                    <option value="status">Status</option>
+                    <option value="priority">Priority</option>
+                </select>
+                <button id="sort-direction" class="sort-direction-btn" title="Toggle sort direction">
+                    <i class="fas fa-sort-down"></i>
+                </button>
+            </div>
+
+            <!-- Page Size -->
+            <div class="page-size-selector">
+                <label for="page-size">Show:</label>
+                <select id="page-size">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Active Filter Tags -->
+        <div id="filter-tags" class="filter-tags" style="display: none;"></div>
+
+        <!-- Tickets List -->
+        <div id="tickets-list">
+            <!-- Tickets will be loaded here -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="pagination-controls" class="pagination-container"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
+        <p>Need help? <a href="./support.html">Contact Support</a></p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/apiService.js"></script>
+    <script src="assets/auth.js"></script>
+    <script src="assets/pagination.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Global pagination manager instance
+        let paginationManager;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!UserManager.isAuthenticated()) {
+                window.location.href = './login.html';
+                return;
+            }
+
+            // Show admin link if user is admin
+            if (typeof UserManager !== 'undefined' && UserManager.isAuthenticated()) {
+                const user = UserManager.getCurrentUser();
+                if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
+                    const adminNavLink = document.getElementById('admin-nav-link');
+                    if (adminNavLink) {
+                        adminNavLink.style.display = 'inline-flex';
+                    }
+                }
+            }
+
+            // Show clear search button when there's text
+            const searchInput = document.getElementById('search-input');
+            const clearSearchBtn = document.getElementById('clear-search');
+            if (searchInput && clearSearchBtn) {
+                searchInput.addEventListener('input', function() {
+                    clearSearchBtn.style.display = this.value ? 'block' : 'none';
+                });
+            }
+
+            // Load filter options
+            await loadFilterOptions();
+
+            // Initialize pagination manager
+            paginationManager = new PaginationManager({
+                apiEndpoint: '/api/tickets/search',
+                containerId: 'tickets-list',
+                paginationId: 'pagination-controls',
+                renderFunction: renderTicketCard,
+                defaultPageSize: 10
+            });
+
+            await paginationManager.init();
+        });
+
+        /**
+         * Render a ticket card
+         */
+        function renderTicketCard(ticket) {
+            const createdDate = new Date(ticket.createdDate).toLocaleDateString();
+            const statusClass = ticket.status.toLowerCase().replace('_', '-');
+            const priorityClass = ticket.priority.toLowerCase();
+
+            return `
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <div>
+                            <div class="ticket-number">#${ticket.ticketNumber}</div>
+                            <div class="ticket-subject">${escapeHtml(ticket.subject)}</div>
+                        </div>
+                        <div class="ticket-badges">
+                            <span class="badge badge-status ${statusClass}">
+                                ${formatStatus(ticket.status)}
+                            </span>
+                            <span class="badge badge-priority ${priorityClass}">
+                                ${formatPriority(ticket.priority)}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="ticket-description">
+                        ${escapeHtml(truncateText(ticket.description, 200))}
+                    </div>
+                    <div class="ticket-footer">
+                        <div class="ticket-meta">
+                            <span><i class="fas fa-calendar"></i> ${createdDate}</span>
+                            <span><i class="fas fa-user"></i> ${escapeHtml(ticket.user?.username || 'Unknown')}</span>
+                            ${ticket.assignedTo ? `<span><i class="fas fa-user-check"></i> Assigned to ${escapeHtml(ticket.assignedTo)}</span>` : ''}
+                        </div>
+                        <div class="ticket-actions">
+                            <button class="btn-view" onclick="viewTicket('${ticket.ticketNumber}')">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * View ticket details
+         */
+        function viewTicket(ticketNumber) {
+            // Navigate to ticket detail page or open modal
+            console.log('View ticket:', ticketNumber);
+            // TODO: Implement ticket detail view
+            alert('Ticket detail view will be implemented. Ticket: ' + ticketNumber);
+        }
+
+        /**
+         * Format status for display
+         */
+        function formatStatus(status) {
+            return status.split('_').map(word => 
+                word.charAt(0) + word.slice(1).toLowerCase()
+            ).join(' ');
+        }
+
+        /**
+         * Format priority for display
+         */
+        function formatPriority(priority) {
+            return priority.charAt(0) + priority.slice(1).toLowerCase();
+        }
+
+        /**
+         * Truncate text to specified length
+         */
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+
+        /**
+         * Escape HTML to prevent XSS
+         */
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
